@@ -19,3 +19,6 @@ Thumbs.db
 obj/
 [Rr]elease*/
 _ReSharper*/
+
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
