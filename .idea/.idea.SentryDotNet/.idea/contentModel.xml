@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Data\Projects\SentryDotNet" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="SentryDotNet" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BreadcrumbType.cs" t="Include" />
+        <e p="ContextTypes.cs" t="Include" />
+        <e p="DeviceSentryContext.cs" t="Include" />
+        <e p="Dsn.cs" t="Include" />
+        <e p="ISentryClient.cs" t="Include" />
+        <e p="ISentryContext.cs" t="Include" />
+        <e p="ISentryStackTraceFrame.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.0" t="Include">
+              <e p="SentryDotNet.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="OsSentryContext.cs" t="Include" />
+        <e p="RuntimeSentryContext.cs" t="Include" />
+        <e p="SentryBreadcrumb.cs" t="Include" />
+        <e p="SentryClient.cs" t="Include" />
+        <e p="SentryClientException.cs" t="Include" />
+        <e p="SentryDotNet.csproj" t="IncludeRecursive" />
+        <e p="SentryEvent.cs" t="Include" />
+        <e p="SentryEventBuilder.cs" t="Include" />
+        <e p="SentryException.cs" t="Include" />
+        <e p="SentryMessage.cs" t="Include" />
+        <e p="SentryRepo.cs" t="Include" />
+        <e p="SentrySdk.cs" t="Include" />
+        <e p="SentryStacktrace.cs" t="Include" />
+        <e p="SentryStacktraceFrame.cs" t="Include" />
+        <e p="SeverityLevel.cs" t="Include" />
+        <e p="UnderscorePropertyNamesContractResolver.cs" t="Include" />
+      </e>
+      <e p="SentryDotNet.sln" t="IncludeFlat" />
+    </e>
+    <e p="C:\Users\dmi\.Rider2017.2\system\resharper-host\local\Transient\ReSharperHost\v10\SolutionCaches\_SentryDotNet.-101638975.00" t="ExcludeRecursive" />
+  </component>
+</project>
