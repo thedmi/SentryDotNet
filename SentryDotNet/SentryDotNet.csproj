@@ -1,6 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Dani Michel</Authors>
+    <Company />
+    <Description>An unopinionated client for sentry.io, built as .NET Standard library.</Description>
+    <PackageLicenseUrl>https://github.com/thedmi/SentryDotNet/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/thedmi/SentryDotNet</PackageProjectUrl>
+    <PackageTags>sentry</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
