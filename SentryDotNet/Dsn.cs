@@ -13,41 +13,32 @@ namespace SentryDotNet
         {
             _dsn = dsn;
 
-            if (!string.IsNullOrEmpty(dsn))
+            try
             {
-                try
-                {
-                    var uri = new Uri(dsn);
+                var uri = new Uri(dsn);
 
-                    PrivateKey = uri.UserInfo.Split(':')[1];
-                    PublicKey = uri.UserInfo.Split(':')[0];
+                PrivateKey = uri.UserInfo.Split(':')[1];
+                PublicKey = uri.UserInfo.Split(':')[0];
 
-                    Port = uri.Port;
+                Port = uri.Port;
 
-                    ProjectId = uri.AbsoluteUri.Substring(uri.AbsoluteUri.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                ProjectId = uri.AbsoluteUri.Substring(uri.AbsoluteUri.LastIndexOf("/", StringComparison.Ordinal) + 1);
 
-                    Path = uri.AbsolutePath.Substring(0, uri.AbsolutePath.LastIndexOf("/", StringComparison.Ordinal));
+                Path = uri.AbsolutePath.Substring(0, uri.AbsolutePath.LastIndexOf("/", StringComparison.Ordinal));
 
-                    ReportApiUri = new Uri(string.Format("{0}://{1}:{2}{3}/api/{4}/store/",
-                        uri.Scheme,
-                        uri.DnsSafeHost,
-                        Port,
-                        Path,
-                        ProjectId));
-                }
-                catch (Exception exception)
-                {
-                    throw new ArgumentException("Invalid DSN", "dsn", exception);
-                }
+                ReportApiUri = new Uri(string.Format("{0}://{1}:{2}{3}/api/{4}/store/",
+                    uri.Scheme,
+                    uri.DnsSafeHost,
+                    Port,
+                    Path,
+                    ProjectId));
             }
-            
+            catch (Exception exception)
+            {
+                throw new ArgumentException("Invalid DSN", "dsn", exception);
+            }
         }
-
-        /// <summary>
-        /// Whether or not the DSN is empty. Empty DSN indicate that the Sentry client should be disabled.
-        /// </summary>
-        public bool IsEmpty => string.IsNullOrEmpty(_dsn);
-
+        
         /// <summary>
         /// Sentry path.
         /// </summary>

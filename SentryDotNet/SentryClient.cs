@@ -27,11 +27,11 @@ namespace SentryDotNet
         /// <param name="sampleRate">The percentage of events that are actually sent to Sentry e.g. 0.26.</param>
         /// <param name="sendHttpRequestFunc">Function that invokes a HttpClient with the given request. This may be used to install 
         /// retry policies or share the HttpClient. If not provided, HttpClient.SendAsync on the internal client will be used.</param>
-        public SentryClient(Dsn dsn,
+        public SentryClient(string dsn,
                             decimal sampleRate = 1m,
                             Func<HttpRequestMessage, Task<HttpResponseMessage>> sendHttpRequestFunc = null)
         {
-            Dsn = dsn ?? throw new ArgumentNullException(nameof(dsn));
+            Dsn = string.IsNullOrEmpty(dsn) ? null : new Dsn(dsn);
             
             if (sampleRate < 0 || sampleRate > 1)
             {
@@ -46,7 +46,7 @@ namespace SentryDotNet
         
         public async Task<string> SendAsync(SentryEvent sentryEvent)
         {
-            if (Dsn.IsEmpty)
+            if (Dsn == null)
             {
                 return "";
             }
@@ -66,7 +66,7 @@ namespace SentryDotNet
         
         public async Task<string> CaptureAsync(Exception exception)
         {
-            if (Dsn.IsEmpty)
+            if (Dsn == null)
             {
                 return "";
             }
@@ -80,7 +80,7 @@ namespace SentryDotNet
 
         public async Task<string> CaptureAsync(string message)
         {
-            if (Dsn.IsEmpty)
+            if (Dsn == null)
             {
                 return "";
             }

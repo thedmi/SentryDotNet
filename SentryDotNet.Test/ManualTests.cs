@@ -6,7 +6,7 @@ namespace SentryDotNet.Test
 {
     public class ManualTests
     {
-        private readonly Dsn _dsn = new Dsn("");
+        private readonly string _dsn ="";
         
         [Fact]
         public async Task TestReportException()
@@ -33,7 +33,7 @@ namespace SentryDotNet.Test
             sentryEventBuilder.Level = SeverityLevel.Warning;
             
             sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("bread.crumb.1"));
-            sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("bread.crumb.2"));
+            sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("bread.crumb.2") { Level = SeverityLevel.Warning });
             
             try
             {
