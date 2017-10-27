@@ -40,7 +40,6 @@ namespace SentryDotNet
         /// <summary>
         /// The record <see cref="SeverityLevel" />.
         /// </summary>
-        [JsonProperty()]
         public SeverityLevel Level { get; set; }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -107,40 +108,35 @@ namespace SentryDotNet
 
             var response = await _sendHttpRequestFunc(request);
 
-            switch ((int)response.StatusCode)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                case 200:
-                    var responseMessage = JsonConvert.DeserializeObject<SentrySuccessResponse>(await response.Content.ReadAsStringAsync());
-                    return responseMessage.Id;
-                case 400:
-                    throw new SentryClientException(string.Join(".", response.Headers.GetValues("X-Sentry-Error")));
-                case 429:
-                    return "";
-                default:
-                    throw new SentryClientException(JsonConvert.SerializeObject(response));
+                throw new SentryClientException(HttpStatusCode.BadRequest,
+                    string.Join(".", response.Headers.GetValues("X-Sentry-Error")));
             }
+            
+            var responseMessage = JsonConvert.DeserializeObject<SentrySuccessResponse>(await response.Content.ReadAsStringAsync());
+            return responseMessage.Id;
         }
 
         private HttpRequestMessage PrepareRequest(SentryEvent sentryEvent)
         {
-            var content = Serialize(sentryEvent);
-
-            var request = new HttpRequestMessage(HttpMethod.Post, Dsn.ReportApiUri) { Content = content };
+            var request = new HttpRequestMessage(HttpMethod.Post, Dsn.ReportApiUri) { Content = Serialize(sentryEvent) };
             request.Headers.UserAgent.Add(new ProductInfoHeaderValue(sentryEvent.Sdk.Name, sentryEvent.Sdk.Version));
 
             var unixTimeSeconds = ((DateTimeOffset) sentryEvent.Timestamp).ToUnixTimeSeconds();
 
+            var client = $"{sentryEvent.Sdk.Name}/{sentryEvent.Sdk.Version}";
+
             request.Headers.Add(
                 "X-Sentry-Auth",
-                $"Sentry sentry_version=7,sentry_timestamp={unixTimeSeconds},sentry_key={Dsn.PublicKey},sentry_secret={Dsn.PrivateKey},sentry_client=sentryDotNet/1.0");
+                $"Sentry sentry_version=7,sentry_timestamp={unixTimeSeconds},sentry_key={Dsn.PublicKey},sentry_secret={Dsn.PrivateKey},sentry_client={client}");
             
             return request;
         }
 
         private StreamContent Serialize(SentryEvent sentryEvent)
         {
-            var payload = JsonConvert.SerializeObject(sentryEvent,
-                CreateSerializerSettings());
+            var payload = JsonConvert.SerializeObject(sentryEvent, CreateSerializerSettings());
             
             var payloadBytes = Encoding.UTF8.GetBytes(payload);
 

@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 namespace SentryDotNet
 {
+    /// <summary>
+    /// This builder simplifies data aggregation that leads to a single event. If you want to add breadcrumbs
+    /// and then an exception for example, this class is the way to go. Note that one builder must be used for a single
+    /// event.
+    /// </summary>
     public class SentryEventBuilder
     {
         private readonly ISentryClient _client;
@@ -151,6 +156,10 @@ namespace SentryDotNet
                 .ToList();
         }
 
+        /// <summary>
+        /// Builds an event with the current data in this builder. If you want to create and send an event immediately,
+        /// use <see cref="CaptureAsync"/> instead.
+        /// </summary>
         public SentryEvent Build()
         {
             return new SentryEvent
@@ -176,6 +185,9 @@ namespace SentryDotNet
                    };
         }
 
+        /// <summary>
+        /// Creates an event the current data in this builder and sends it to Sentry.
+        /// </summary>
         public async Task<string> CaptureAsync()
         {
             return await _client.SendAsync(Build());
