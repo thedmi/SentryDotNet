@@ -14,7 +14,7 @@ namespace SentryDotNet
 {
     public class SentryClient : ISentryClient
     {
-        private static readonly HttpClient SingletonHttpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new HttpClient();
         
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _sendHttpRequestFunc;
 
@@ -26,7 +26,7 @@ namespace SentryDotNet
         /// <param name="dsn">The DSN to use when sending events to Sentry.</param>
         /// <param name="sampleRate">The percentage of events that are actually sent to Sentry e.g. 0.26.</param>
         /// <param name="sendHttpRequestFunc">Function that invokes a HttpClient with the given request. This may be used to install 
-        /// retry policies or share the HttpClient. If not provided, <c>r => SingletonHttpClient.SendAsync(r)</c> will be used.</param>
+        /// retry policies or share the HttpClient. If not provided, HttpClient.SendAsync on the internal client will be used.</param>
         public SentryClient(Dsn dsn,
                             decimal sampleRate = 1m,
                             Func<HttpRequestMessage, Task<HttpResponseMessage>> sendHttpRequestFunc = null)
@@ -39,7 +39,7 @@ namespace SentryDotNet
             }
 
             _sampleRate = sampleRate;
-            _sendHttpRequestFunc = sendHttpRequestFunc ?? SendHttpRequestAsync;
+            _sendHttpRequestFunc = sendHttpRequestFunc ?? (async r => await _httpClient.SendAsync(r));
         }
         
         public Dsn Dsn { get; }
@@ -95,11 +95,6 @@ namespace SentryDotNet
         public SentryEventBuilder CreateEventBuilder()
         {
             return new SentryEventBuilder(this);
-        }
-        
-        private static async Task<HttpResponseMessage> SendHttpRequestAsync(HttpRequestMessage request)
-        {
-            return await SingletonHttpClient.SendAsync(request);
         }
 
         private async Task<string> SerializeAndSendAsync(SentryEvent sentryEvent)
