@@ -93,9 +93,9 @@ namespace SentryDotNet
         public string[] Fingerprint { get; set; }
 
         /// <summary>
-        /// A list of <see cref="SentryException" /> related to this event.
+        /// A list of <see cref="ISentryException" /> related to this event.
         /// </summary>
-        public List<SentryException> Exception { get; set; }
+        public List<ISentryException> Exception { get; set; }
 
         /// <summary>
         /// A user friendly event that conveys the meaning of this event.
@@ -105,7 +105,7 @@ namespace SentryDotNet
         /// <summary>
         /// A trail of breadcrumbs, if any, that led up to the event creation.
         /// </summary>
-        public List<SentryBreadcrumb> Breadcrumbs { get; set; } = new List<SentryBreadcrumb>();
+        public List<ISentryBreadcrumb> Breadcrumbs { get; set; } = new List<ISentryBreadcrumb>();
 
         /// <summary>
         /// A dictionary of <see cref="ISentryContext" /> for this event.
@@ -141,7 +141,7 @@ namespace SentryDotNet
             Exception = ConvertException(ex);
         }
         
-        private static List<SentryException> ConvertException(Exception ex)
+        private static List<ISentryException> ConvertException(Exception ex)
         {
             var sentryException = new SentryException
             {
@@ -152,7 +152,7 @@ namespace SentryDotNet
             };
 
             return new[] { sentryException }
-                .Concat(ex.InnerException == null ? new List<SentryException>() : ConvertException(ex.InnerException))
+                .Concat(ex.InnerException == null ? new List<ISentryException>() : ConvertException(ex.InnerException))
                 .ToList();
         }
 

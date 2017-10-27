@@ -84,19 +84,19 @@ namespace SentryDotNet
         public string[] Fingerprint { get; set; }
 
         /// <summary>
-        /// A list of <see cref="SentryException" /> related to this event.
+        /// A list of <see cref="ISentryException" /> related to this event.
         /// </summary>
-        public IReadOnlyList<SentryException> Exception { get; set; }
+        public IReadOnlyList<ISentryException> Exception { get; set; }
 
         /// <summary>
         /// A user friendly event that conveys the meaning of this event.
         /// </summary>
-        public SentryMessage Message { get; set; }
+        public ISentryMessage Message { get; set; }
 
         /// <summary>
         /// A trail of breadcrumbs, if any, that led up to the event creation.
         /// </summary>
-        public IReadOnlyList<SentryBreadcrumb> Breadcrumbs { get; set; }
+        public IReadOnlyList<ISentryBreadcrumb> Breadcrumbs { get; set; }
 
         /// <summary>
         /// A dictionary of <see cref="ISentryContext" /> for this event.
