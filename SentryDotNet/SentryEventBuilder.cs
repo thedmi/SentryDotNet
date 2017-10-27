@@ -173,7 +173,7 @@ namespace SentryDotNet
                        Culprit = Culprit,
                        ServerName = ServerName,
                        Release = Release,
-                       Tags = Tags,
+                       Tags = Tags?.ToDictionary(p => p.Key, p => p.Value),
                        Environment = Environment,
                        Modules = Modules,
                        Extra = Extra,
@@ -181,7 +181,7 @@ namespace SentryDotNet
                        Exception = Exception,
                        Message = Message,
                        Breadcrumbs = Breadcrumbs,
-                       Contexts = Contexts
+                       Contexts = Contexts?.ToDictionary(p => p.Key, p => p.Value)
                    };
         }
 

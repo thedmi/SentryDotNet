@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,30 +19,37 @@ namespace SentryDotNet
         
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _sendHttpRequestFunc;
 
+        private readonly SentryEventDefaults _defaults;
+
         private readonly decimal _sampleRate;
 
         /// <summary>
         /// Creates a client capable of sending events to Sentry.
         /// </summary>
         /// <param name="dsn">The DSN to use when sending events to Sentry.</param>
+        /// <param name="defaults">Defaults object that will be used to prepopulate the event builder. Put static data 
+        /// that should always be sent to Sentry here.</param>
         /// <param name="sampleRate">The percentage of events that are actually sent to Sentry e.g. 0.26.</param>
         /// <param name="sendHttpRequestFunc">Function that invokes a HttpClient with the given request. This may be used to install 
         /// retry policies or share the HttpClient. If not provided, HttpClient.SendAsync on the internal client will be used.</param>
-        public SentryClient(string dsn,
-                            decimal sampleRate = 1m,
-                            Func<HttpRequestMessage, Task<HttpResponseMessage>> sendHttpRequestFunc = null)
+        public SentryClient(
+            string dsn,
+            SentryEventDefaults defaults = null,
+            decimal sampleRate = 1m,
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> sendHttpRequestFunc = null)
         {
             Dsn = string.IsNullOrEmpty(dsn) ? null : new Dsn(dsn);
-            
+
             if (sampleRate < 0 || sampleRate > 1)
             {
                 throw new ArgumentException("sample rate must be in the [0,1] interval", nameof(sampleRate));
             }
 
+            _defaults = defaults ?? new SentryEventDefaults();
             _sampleRate = sampleRate;
             _sendHttpRequestFunc = sendHttpRequestFunc ?? (async r => await _httpClient.SendAsync(r));
         }
-        
+
         public Dsn Dsn { get; }
         
         public async Task<string> SendAsync(SentryEvent sentryEvent)
@@ -94,7 +102,20 @@ namespace SentryDotNet
 
         public SentryEventBuilder CreateEventBuilder()
         {
-            return new SentryEventBuilder(this);
+            var builder = new SentryEventBuilder(this)
+            {
+                Logger = _defaults.Logger,
+                Level = _defaults.Level,
+                ServerName = _defaults.ServerName,
+                Release = _defaults.Release,
+                Tags = _defaults.Tags?.ToDictionary(p => p.Key, p => p.Value),
+                Environment = _defaults.Environment,
+                Modules = _defaults.Modules?.ToDictionary(p => p.Key, p => p.Value),
+                Extra = _defaults.Extra,
+                Contexts = _defaults.Contexts?.ToDictionary(p => p.Key, p => p.Value)
+            };
+
+            return builder;
         }
 
         private async Task<string> SerializeAndSendAsync(SentryEvent sentryEvent)

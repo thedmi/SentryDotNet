@@ -26,14 +26,14 @@ namespace SentryDotNet.Test
         [Fact]
         public async Task TestReportExceptionWithBreadcrumbsAndAdditionalInfo()
         {
-            var client = new SentryClient(_dsn);
+            var client = new SentryClient(_dsn, new SentryEventDefaults(environment: "the_env", serverName: "server1"));
 
             var sentryEventBuilder = client.CreateEventBuilder();
 
             sentryEventBuilder.Level = SeverityLevel.Warning;
             
             sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("bread.crumb.1"));
-            sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("bread.crumb.2") { Level = SeverityLevel.Warning });
+            sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("bread.crumb.2") { Level = SeverityLevel.Debug });
             
             try
             {
