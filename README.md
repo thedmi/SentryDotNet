@@ -1,4 +1,7 @@
 
+[![Build Status](https://travis-ci.org/thedmi/SentryDotNet.svg?branch=master)](https://travis-ci.org/thedmi/SentryDotNet)
+[![NuGet](https://img.shields.io/nuget/v/SentryDotNet.svg)](https://www.nuget.org/packages/SentryDotNet/)
+
 # SentryDotNet - An unopinionated Sentry client for .NET
 
 SentryDotNet is a **.NET Standard 2.0 library** that implements just the basic parts of a [Sentry](https://sentry.io) client:
