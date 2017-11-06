@@ -39,7 +39,7 @@ try {
 catch (Exception e) {
     // Send exceptions to Sentry
     await client.CaptureAsync(exception);
-    throw e;
+    throw;
 }
 ```
 
