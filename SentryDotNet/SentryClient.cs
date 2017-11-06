@@ -108,11 +108,11 @@ namespace SentryDotNet
                 Level = _defaults.Level,
                 ServerName = _defaults.ServerName,
                 Release = _defaults.Release,
-                Tags = _defaults.Tags?.ToDictionary(p => p.Key, p => p.Value),
+                Tags = _defaults.Tags.ToDictionary(p => p.Key, p => p.Value),
                 Environment = _defaults.Environment,
-                Modules = _defaults.Modules?.ToDictionary(p => p.Key, p => p.Value),
+                Modules = _defaults.Modules.ToDictionary(p => p.Key, p => p.Value),
                 Extra = _defaults.Extra,
-                Contexts = _defaults.Contexts?.ToDictionary(p => p.Key, p => p.Value)
+                Contexts = _defaults.Contexts.ToDictionary(p => p.Key, p => p.Value)
             };
 
             return builder;
