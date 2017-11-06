@@ -45,6 +45,10 @@ namespace SentryDotNet.AspNetCoreTestApp
 
         private static async Task DoSomethingAsync(HttpContext context)
         {
+            var eventBuilder = (SentryEventBuilder)context.Items[SentryDotNetMiddleware.EventBuilderKey];
+            
+            eventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("some.breadcrumb") { Message = "I am a breadcrumb" });
+            
             if (context.Request.Path.HasValue && context.Request.Path.Value.Contains("error"))
             {
                 throw new InvalidOperationException("Boom");
