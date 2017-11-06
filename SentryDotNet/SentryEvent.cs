@@ -91,7 +91,7 @@ namespace SentryDotNet
         /// <summary>
         /// A user friendly event that conveys the meaning of this event.
         /// </summary>
-        public ISentryMessage Message { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// A trail of breadcrumbs, if any, that led up to the event creation.

@@ -100,7 +100,7 @@ namespace SentryDotNet
         /// <summary>
         /// A user friendly event that conveys the meaning of this event.
         /// </summary>
-        public SentryMessage Message { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// A trail of breadcrumbs, if any, that led up to the event creation.
@@ -121,7 +121,7 @@ namespace SentryDotNet
                 Level = SeverityLevel.Info;
             }
             
-            Message = new SentryMessage { Message = message };
+            Message = message;
         }
 
         public void SetException(Exception ex)
@@ -135,7 +135,7 @@ namespace SentryDotNet
 
             if (Message == null)
             {
-                Message = new SentryMessage { Message = ex.Message };
+                Message = ex.Message;
             }
 
             Exception = ConvertException(ex);
