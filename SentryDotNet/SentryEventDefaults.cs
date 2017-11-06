@@ -19,11 +19,11 @@ namespace SentryDotNet
             Level = level;
             ServerName = serverName;
             Release = release;
-            Tags = tags;
+            Tags = tags ?? new Dictionary<string, string>();
             Environment = environment;
-            Modules = modules;
+            Modules = modules ?? new Dictionary<string, string>();
             Extra = extra;
-            Contexts = contexts;
+            Contexts = contexts ?? new Dictionary<string, ISentryContext>();
         }
 
         public string Logger { get; }

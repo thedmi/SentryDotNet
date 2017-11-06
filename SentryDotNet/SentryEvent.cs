@@ -81,7 +81,7 @@ namespace SentryDotNet
         /// An array of strings used to dictate the deduplication of this event.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string[] Fingerprint { get; set; }
+        public IReadOnlyList<string> Fingerprint { get; set; }
 
         /// <summary>
         /// A list of <see cref="ISentryException" /> related to this event.
@@ -91,7 +91,7 @@ namespace SentryDotNet
         /// <summary>
         /// A user friendly event that conveys the meaning of this event.
         /// </summary>
-        public ISentryMessage Message { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// A trail of breadcrumbs, if any, that led up to the event creation.

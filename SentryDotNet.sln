@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentryDotNet", "SentryDotNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentryDotNet.Test", "SentryDotNet.Test\SentryDotNet.Test.csproj", "{106A4CD5-89BC-4E05-9439-99787DC98AE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentryDotNet.AspNetCore", "SentryDotNet.AspNetCore\SentryDotNet.AspNetCore.csproj", "{76C0816E-E482-4C7E-B32B-424B167AF69E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentryDotNet.AspNetCoreTestApp", "SentryDotNet.AspNetCoreTestApp\SentryDotNet.AspNetCoreTestApp.csproj", "{55F894E9-5A4E-460E-9AAD-4A0DCAE151B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{106A4CD5-89BC-4E05-9439-99787DC98AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{106A4CD5-89BC-4E05-9439-99787DC98AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{106A4CD5-89BC-4E05-9439-99787DC98AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76C0816E-E482-4C7E-B32B-424B167AF69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76C0816E-E482-4C7E-B32B-424B167AF69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76C0816E-E482-4C7E-B32B-424B167AF69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76C0816E-E482-4C7E-B32B-424B167AF69E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55F894E9-5A4E-460E-9AAD-4A0DCAE151B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55F894E9-5A4E-460E-9AAD-4A0DCAE151B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55F894E9-5A4E-460E-9AAD-4A0DCAE151B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55F894E9-5A4E-460E-9AAD-4A0DCAE151B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

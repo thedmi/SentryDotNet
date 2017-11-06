@@ -2,7 +2,9 @@
 [![Build Status](https://travis-ci.org/thedmi/SentryDotNet.svg?branch=master)](https://travis-ci.org/thedmi/SentryDotNet)
 [![NuGet](https://img.shields.io/nuget/v/SentryDotNet.svg)](https://www.nuget.org/packages/SentryDotNet/)
 
-# SentryDotNet - An unopinionated Sentry client for .NET
+# Libraries
+
+## SentryDotNet - An unopinionated Sentry client for .NET
 
 SentryDotNet is a **.NET Standard 2.0 library** that implements just the basic parts of a [Sentry](https://sentry.io) client:
 
@@ -10,10 +12,12 @@ SentryDotNet is a **.NET Standard 2.0 library** that implements just the basic p
 - Basic mechanisms to construct Sentry events for various use cases
 - Communication with the API
 
-This library does **not** attempt to provide out of the box integrations with various frameworks such as ASP.NET Core or Xamarin, but it is a good starting point if you want to build such an integration.
+## SentryDotNet.AspNetCore - ASP.NET Core Middleware Adapter for SentryDotNet
+
+This is a separate library that builds upon SentryDotNet and provides a simple way to use SentryDotNet in ASP.NET Core 2.0 web applications.  
 
 
-## Design Goals
+# Design Goals
 
 - Target .NET Standard 2.0
 - Only json.NET as external dependency
@@ -21,9 +25,9 @@ This library does **not** attempt to provide out of the box integrations with va
 - Simple to use
 
 
-## Usage
+# Usage
 
-### Simple
+## Simple
 
 For simple scenarios, just create a `SentryClient` and use it to capture exceptions and messages. The `SentryClient`
 is thread-safe and can be shared across all threads.
@@ -44,7 +48,7 @@ catch (Exception e) {
 ```
 
 
-### Custom HTTP request processing
+## Custom HTTP request processing
 
 In some cases, applications need to be able to send the Sentry requests themselves. This could be necessary when a
 shared `HttpClient` singleton should be used (see e.g. [this blog post](https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/))
@@ -62,7 +66,7 @@ var sentryClient =  new SentryClient(
 // Now use sentryClient the same way as above
 ```
 
-### Sentry event building
+## Sentry event building
 
 Since the `SentryClient` itself is stateless & thread-safe, it cannot be used directly to
 accumulate information. Instead, a `SentryEventBuilder` can be used to do this. An example where this would be useful is in web applications. You could create one `SentryEventBuilder` per request and add request-specific data to the builder. When an exception occurs, you can use the builder to capture the exception together with the previously recorded data.
@@ -92,7 +96,7 @@ Note that the above is just an example, you will need to adapt the code to the
 specific web framework you're using.
 
 
-## Other Sentry clients
+# Other Sentry clients
 
 If you don't like SentryDotNet, here are a few other, more opinionated libraries. SentryDotNet borrowed ideas & code from a few of them (thanks!).
 

@@ -70,7 +70,7 @@ namespace SentryDotNet
         /// <summary>
         /// A list of tags, or additional information, for this event.
         /// </summary>
-        public Dictionary<string, string> Tags { get; set; }
+        public Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// The operating environment that the event was created e.g. production, staging.
@@ -80,7 +80,7 @@ namespace SentryDotNet
         /// <summary>
         /// A list of relevant modules and their versions.
         /// </summary>
-        public Dictionary<string, string> Modules { get; set; }
+        public Dictionary<string, string> Modules { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// An arbitrary mapping of additional metadata to store with the event.
@@ -90,17 +90,17 @@ namespace SentryDotNet
         /// <summary>
         /// An array of strings used to dictate the deduplication of this event.
         /// </summary>
-        public string[] Fingerprint { get; set; }
+        public IReadOnlyList<string> Fingerprint { get; set; } = new List<string>();
 
         /// <summary>
         /// A list of <see cref="ISentryException" /> related to this event.
         /// </summary>
-        public List<ISentryException> Exception { get; set; }
+        public List<ISentryException> Exception { get; set; } = new List<ISentryException>();
 
         /// <summary>
         /// A user friendly event that conveys the meaning of this event.
         /// </summary>
-        public SentryMessage Message { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// A trail of breadcrumbs, if any, that led up to the event creation.
@@ -121,7 +121,7 @@ namespace SentryDotNet
                 Level = SeverityLevel.Info;
             }
             
-            Message = new SentryMessage { Message = message };
+            Message = message;
         }
 
         public void SetException(Exception ex)
@@ -135,7 +135,7 @@ namespace SentryDotNet
 
             if (Message == null)
             {
-                Message = new SentryMessage { Message = ex.Message };
+                Message = ex.Message;
             }
 
             Exception = ConvertException(ex);
@@ -173,15 +173,15 @@ namespace SentryDotNet
                        Culprit = Culprit,
                        ServerName = ServerName,
                        Release = Release,
-                       Tags = Tags?.ToDictionary(p => p.Key, p => p.Value),
+                       Tags = Tags.Any()? Tags.ToDictionary(p => p.Key, p => p.Value) : null,
                        Environment = Environment,
-                       Modules = Modules,
+                       Modules = Modules.Any() ? Modules : null,
                        Extra = Extra,
-                       Fingerprint = Fingerprint,
-                       Exception = Exception,
+                       Fingerprint = Fingerprint.Any() ? Fingerprint : null,
+                       Exception = Exception.Any() ? Exception : null,
                        Message = Message,
                        Breadcrumbs = Breadcrumbs,
-                       Contexts = Contexts?.ToDictionary(p => p.Key, p => p.Value)
+                       Contexts = Contexts.Any() ? Contexts.ToDictionary(p => p.Key, p => p.Value) : null
                    };
         }
 
