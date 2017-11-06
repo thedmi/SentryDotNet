@@ -1,10 +1,11 @@
 
 [![Build Status](https://travis-ci.org/thedmi/SentryDotNet.svg?branch=master)](https://travis-ci.org/thedmi/SentryDotNet)
-[![NuGet](https://img.shields.io/nuget/v/SentryDotNet.svg)](https://www.nuget.org/packages/SentryDotNet/)
 
 # Libraries
 
 ## SentryDotNet - An unopinionated Sentry client for .NET
+
+[![NuGet](https://img.shields.io/nuget/v/SentryDotNet.svg)](https://www.nuget.org/packages/SentryDotNet/)
 
 SentryDotNet is a **.NET Standard 2.0 library** that implements just the basic parts of a [Sentry](https://sentry.io) client:
 
@@ -14,7 +15,9 @@ SentryDotNet is a **.NET Standard 2.0 library** that implements just the basic p
 
 ## SentryDotNet.AspNetCore - ASP.NET Core Middleware Adapter for SentryDotNet
 
-This is a separate library that builds upon SentryDotNet and provides a simple way to use SentryDotNet in ASP.NET Core 2.0 web applications.  
+[![NuGet](https://img.shields.io/nuget/v/SentryDotNet.AspNetCore.svg)](https://www.nuget.org/packages/SentryDotNet.AspNetCore/)
+
+This is a separate library that builds upon SentryDotNet and provides a simple way to use SentryDotNet in ASP.NET Core 2.0 web applications. See [this example Startup class](SentryDotNet.AspNetCoreTestApp/Startup.cs) for a usage example.
 
 
 # Design Goals
