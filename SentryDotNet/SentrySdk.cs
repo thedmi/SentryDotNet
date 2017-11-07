@@ -7,7 +7,11 @@
     /// </summary>
     public class SentrySdk
     {
-        public static readonly SentrySdk SentryDotNet = new SentrySdk { Name = "SentryDotNet", Version = "1.0.0" }; 
+        public static readonly SentrySdk SentryDotNet = new SentrySdk
+        {
+            Name = "SentryDotNet",
+            Version = typeof(SentryClient).Assembly.GetName().Version.ToString(3)
+        }; 
         
         /// <summary>
         /// The name of the SDK.
