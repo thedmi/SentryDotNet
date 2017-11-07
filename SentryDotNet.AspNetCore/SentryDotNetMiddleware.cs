@@ -48,6 +48,12 @@ namespace SentryDotNet.AspNetCore
         {
             var builder = _client.CreateEventBuilder();
 
+            builder.Sdk = new SentrySdk
+            {
+                Name = "SentryDotNet.AspNetCore",
+                Version = typeof(SentryDotNetMiddleware).Assembly.GetName().Version.ToString(3)
+            };
+            
             builder.Logger = string.IsNullOrWhiteSpace(builder.Logger) ? "SentryDotNet.AspNetCore" : builder.Logger;
             builder.Culprit = context.Request.Method.ToUpper(CultureInfo.InvariantCulture) + " " +
                               context.Request.Path.ToString();
