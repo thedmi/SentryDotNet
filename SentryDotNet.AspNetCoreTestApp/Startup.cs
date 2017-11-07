@@ -28,9 +28,9 @@ namespace SentryDotNet.AspNetCoreTestApp
                 new SentryClient(
                     dsn,
                     new SentryEventDefaults(
-                        environment: _env.ApplicationName,
-                        release: typeof(ISentryClient).Assembly.GetName().Version.ToString(3),
-                        logger: "SentryDotNet")));
+                        environment: _env.EnvironmentName,
+                        release: typeof(Startup).Assembly.GetName().Version.ToString(3),
+                        logger: _env.ApplicationName)));
         }
 
         public void Configure(IApplicationBuilder app)

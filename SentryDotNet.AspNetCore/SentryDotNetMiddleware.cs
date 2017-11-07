@@ -38,9 +38,25 @@ namespace SentryDotNet.AspNetCore
             catch (Exception e) when (_client != null)
             {
                 builder.SetException(e);
-                await builder.CaptureAsync();
-
+                await SendToSentryAsync(builder, e);
+                
                 throw;
+            }
+        }
+
+        private static async Task SendToSentryAsync(SentryEventBuilder builder, Exception e)
+        {
+            try
+            {
+                await builder.CaptureAsync();
+            }
+            catch (SentryClientException sentryClientException)
+            {
+                Console.Error.WriteLine("Exception during communication with Sentry:");
+                Console.Error.WriteLine(sentryClientException.ToString());
+                Console.Error.WriteLine("The following exception was thus NOT reported to Sentry:");
+                Console.Error.WriteLine(e.ToString());
+                Console.Error.WriteLine();
             }
         }
 
