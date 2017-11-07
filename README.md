@@ -1,39 +1,77 @@
 
 [![Build Status](https://travis-ci.org/thedmi/SentryDotNet.svg?branch=master)](https://travis-ci.org/thedmi/SentryDotNet)
 
-# Libraries
-
-## SentryDotNet - An unopinionated Sentry client for .NET
+# SentryDotNet
 
 [![NuGet](https://img.shields.io/nuget/v/SentryDotNet.svg)](https://www.nuget.org/packages/SentryDotNet/)
 
-SentryDotNet is a **.NET Standard 2.0 library** that implements just the basic parts of a [Sentry](https://sentry.io) client:
+SentryDotNet is a **.NET Standard 2.0 library** that implements just the generic parts of a [Sentry](https://sentry.io) client:
 
 - Sentry API data model
 - Basic mechanisms to construct Sentry events for various use cases
 - Communication with the API
 
-## SentryDotNet.AspNetCore - ASP.NET Core Middleware Adapter for SentryDotNet
+It's designed to be useful in any environment, be it web, desktop or mobile applications. The only external dependency is JSON.net.
+
+
+## SentryDotNet.AspNetCore - ASP.NET Core Adapter for SentryDotNet
 
 [![NuGet](https://img.shields.io/nuget/v/SentryDotNet.AspNetCore.svg)](https://www.nuget.org/packages/SentryDotNet.AspNetCore/)
 
-This is a separate library that builds upon SentryDotNet and provides a simple way to use SentryDotNet in ASP.NET Core 2.0 web applications. See [this example Startup class](SentryDotNet.AspNetCoreTestApp/Startup.cs) for a usage example.
-
-
-# Design Goals
-
-- Target .NET Standard 2.0
-- Only json.NET as external dependency
-- Suitable for all environments (web apps, mobile apps, desktop apps)
-- Simple to use
+This is a separate library that builds upon SentryDotNet and provides an **ASP.NET Core 2.0 middleware**, so that SentryDotNet can easily be used in web applications.
 
 
 # Usage
 
-## Simple
+## ASP.NET Core middleware
 
-For simple scenarios, just create a `SentryClient` and use it to capture exceptions and messages. The `SentryClient`
-is thread-safe and can be shared across all threads.
+### Startup
+
+After installing the [Nuget package](https://www.nuget.org/packages/SentryDotNet.AspNetCore), the middleware can be used from the Startup class:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddSentryDotNet(new SentryClient("YourSentryDsn"));
+
+    // Other services
+}
+
+
+public void Configure(IApplicationBuilder app)
+{
+    app.UseSentryDotNet();
+
+    // Other middleware, e.g. app.UseMvc()
+}
+```
+
+Make sure you `UseSentryDotNet()` *after* any middleware that intercepts exceptions. Otherwise, the SentryDotNet middleware will not see the exception. E.g. the `app.UseDeveloperExceptionPage()` should be used before `app.UseSentryDotNet()`.
+
+Note that the `SentryClient` is thread-safe and can be shared across all requests (like in the code snippet above).
+
+See also [the Startup class in the test project](SentryDotNet.AspNetCoreTestApp/Startup.cs) for an additional example.
+
+### Additional Request Information
+
+In `app.UseSentryDotNet()`, a new [SentryEventBuilder](SentryDotNet/SentryEventBuilder.cs) is created per request. This builder can be used to gather request data that is later sent to Sentry when an exception occurs. The builder can be accessed through the HTTP context items  with `HttpContext.Items[SentryDotNetMiddleware.EventBuilderKey]`.
+
+The following example illustrates this:
+
+```csharp
+// Somewhere in the authorization handler
+
+var sentryEventBuilder = (SentryEventBuilder)context.Items[SentryDotNetMiddleware.EventBuilderKey];
+sentryEventBuilder.AddBreadcrumb(new SentryBreadcrumb("authorized") { Message = $"User {username} authorized"});
+
+```
+
+
+## Generic SentryClient
+
+If you're on something else than ASP.NET Core, you can use the [SentryClient](SentryDotNet/SentryClient.cs) directly. Just install [this Nuget package](https://www.nuget.org/packages/SentryDotNet/).
+
+For simple scenarios, create a `SentryClient` and use it to capture exceptions and messages. The `SentryClient` is thread-safe and can be shared across all threads.
 
 ```csharp
 // During app initialization, instantiate the client
@@ -50,29 +88,28 @@ catch (Exception e) {
 }
 ```
 
+## Advanced Scenarios
 
-## Custom HTTP request processing
+The following customizations can be used with the generic library or the ASP.NET Core adapter.
 
-In some cases, applications need to be able to send the Sentry requests themselves. This could be necessary when a
-shared `HttpClient` singleton should be used (see e.g. [this blog post](https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/))
-or when resiliency policies must be used (e.g. through the excellent [Polly library](https://github.com/App-vNext/Polly)). The
-following example shows both:
+### Custom HTTP request processing
+
+In some cases, applications need to be able to send the Sentry requests themselves. This could be necessary e.g. when resiliency policies must be used (e.g. through the excellent [Polly library](https://github.com/App-vNext/Polly)). The following example illustrates this:
 
 ```csharp
-var singletonHttpClient = new HttpClient();
+var httpClient = new HttpClient();
 var retryPolicy = Polly.Handle<SentryClientException>().WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(Math.Pow(2, i)));
 
 var sentryClient =  new SentryClient(
     "YourSentryDsn",
-    async (r) => await retryPolicy.ExecuteAsync(async () => await singletonHttpClient.SendAsync(r)));
+    async (r) => await retryPolicy.ExecuteAsync(async () => await httpClient.SendAsync(r)));
 
 // Now use sentryClient the same way as above
 ```
 
-## Sentry event building
+### Sentry event building
 
-Since the `SentryClient` itself is stateless & thread-safe, it cannot be used directly to
-accumulate information. Instead, a `SentryEventBuilder` can be used to do this. An example where this would be useful is in web applications. You could create one `SentryEventBuilder` per request and add request-specific data to the builder. When an exception occurs, you can use the builder to capture the exception together with the previously recorded data.
+Since the `SentryClient` itself is stateless & thread-safe, it cannot be used directly to accumulate additional sentry event information such as breadcrumbs. Instead, a `SentryEventBuilder` can be created to do this. An example where this would be useful is in web applications. You could create one `SentryEventBuilder` per request and add request-specific data to the builder. When an exception occurs, you can use the builder to capture the exception together with the previously recorded data.
 
 
 ```csharp
@@ -80,15 +117,15 @@ accumulate information. Instead, a `SentryEventBuilder` can be used to do this. 
 
 // Create an event builder and add custom data
 var eventBuilder = sentryClient.CreateEventBuilder();
-eventBuilder.Culprit = Request.Uri.ToString();
+eventBuilder.Culprit = RequestUri.ToString();
 eventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("Referer") { Message = Request.Headers.Referer });
 
 // Attach the builder to the request context for later retrieval
-Request.Context["SentryEventBuilder"] = eventBuilder;
+RequestContext["SentryEventBuilder"] = eventBuilder;
 
 // Later in the exception handling pipeline...
 
-var eventBuilder = Request.Context["SentryEventBuilder"] as SentryEventBuilder;
+var eventBuilder = RequestContext["SentryEventBuilder"] as SentryEventBuilder;
 eventBuilder.SetException(theException);
 
 // Send to Sentry
