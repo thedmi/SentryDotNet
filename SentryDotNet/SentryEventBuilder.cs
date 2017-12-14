@@ -163,26 +163,26 @@ namespace SentryDotNet
         public SentryEvent Build()
         {
             return new SentryEvent
-                   {
-                       EventId = (EventId ?? Guid.NewGuid()).ToString("N"),
-                       Timestamp = Timestamp ?? DateTime.UtcNow,
-                       Logger = Logger,
-                       Platform = Platform,
-                       Sdk = Sdk,
-                       Level = Level ?? (Exception == null ? SeverityLevel.Info : SeverityLevel.Error),
-                       Culprit = Culprit,
-                       ServerName = ServerName,
-                       Release = Release,
-                       Tags = Tags.Any()? Tags.ToDictionary(p => p.Key, p => p.Value) : null,
-                       Environment = Environment,
-                       Modules = Modules.Any() ? Modules : null,
-                       Extra = Extra,
-                       Fingerprint = Fingerprint.Any() ? Fingerprint : null,
-                       Exception = Exception.Any() ? Exception : null,
-                       Message = Message,
-                       Breadcrumbs = Breadcrumbs,
-                       Contexts = Contexts.Any() ? Contexts.ToDictionary(p => p.Key, p => p.Value) : null
-                   };
+            {
+                EventId = (EventId ?? Guid.NewGuid()).ToString("N"),
+                Timestamp = Timestamp ?? DateTime.UtcNow,
+                Logger = Logger,
+                Platform = Platform,
+                Sdk = Sdk,
+                Level = Level ?? (Exception == null ? SeverityLevel.Info : SeverityLevel.Error),
+                Culprit = Culprit,
+                ServerName = ServerName,
+                Release = Release,
+                Tags = Tags.Any() ? Tags.ToDictionary(p => p.Key, p => p.Value) : null,
+                Environment = Environment,
+                Modules = Modules.Any() ? Modules : null,
+                Extra = Extra,
+                Fingerprint = Fingerprint.Any() ? Fingerprint : null,
+                Exception = Exception.Any() ? Exception : null,
+                Message = Message,
+                Breadcrumbs = Breadcrumbs,
+                Contexts = Contexts.Any() ? Contexts.ToDictionary(p => p.Key, p => p.Value) : null
+            };
         }
 
         /// <summary>

@@ -60,6 +60,7 @@ namespace SentryDotNet
         /// <summary>
         /// A list of tags, or additional information, for this event.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public IReadOnlyDictionary<string, string> Tags { get; set; }
 
         /// <summary>
