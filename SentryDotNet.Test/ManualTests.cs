@@ -54,7 +54,7 @@ namespace SentryDotNet.Test
 
         private void FailingMethod()
         {
-            throw new InvalidOperationException("It failed deliberately :-)");
+            throw new InvalidOperationException("It failed deliberately at " + DateTime.UtcNow.ToString("O"));
         }
     }
 }
