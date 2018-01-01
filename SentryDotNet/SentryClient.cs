@@ -86,7 +86,21 @@ namespace SentryDotNet
             return await builder.CaptureAsync();
         }
 
-        public async Task<string> CaptureAsync(string message)
+        public async Task<string> CaptureAsync(FormattableString message)
+        {
+            if (Dsn == null)
+            {
+                return "";
+            }
+            
+            var builder = CreateEventBuilder();
+
+            builder.SetMessage(message);
+
+            return await builder.CaptureAsync();
+        }
+
+        public async Task<string> CaptureAsync(object message)
         {
             if (Dsn == null)
             {

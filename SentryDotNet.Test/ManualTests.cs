@@ -46,6 +46,19 @@ namespace SentryDotNet.Test
             }
         }
 
+        [Fact]
+        public async Task TestReportInformationalMessage()
+        {
+            var client = new SentryClient(_dsn);
+
+            var builder = client.CreateEventBuilder();
+
+            var date = DateTime.UtcNow.ToString("O");
+            builder.SetMessage($"This is an information at {date}");
+            
+            await builder.CaptureAsync();
+        }
+
         // ReSharper disable once UnusedParameter.Local
         private void SomeMethod(int theParam)
         {

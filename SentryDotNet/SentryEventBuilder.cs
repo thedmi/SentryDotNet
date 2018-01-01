@@ -114,16 +114,27 @@ namespace SentryDotNet
 
         // TODO Add Http, User, and Threads "interfaces"
 
-        public void SetMessage(string message)
+        public void SetMessage(FormattableString message)
         {
             if (Level == null)
             {
                 Level = SeverityLevel.Info;
             }
             
-            Message = message;
+            Message = message.ToString();
+            Fingerprint = new [] { message.Format, Level.ToString() };
         }
-
+        
+        public void SetMessage(object message)
+        {
+            if (Level == null)
+            {
+                Level = SeverityLevel.Info;
+            }
+            
+            Message = message.ToString();
+        }
+        
         public void SetException(Exception ex)
         {
             if (Culprit == null)

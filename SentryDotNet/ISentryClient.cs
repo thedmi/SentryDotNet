@@ -34,7 +34,14 @@ namespace SentryDotNet
         /// additional information  such as breadcrumbs, use <see cref="CreateEventBuilder"/> if you need that 
         /// functionality.
         /// </summary>
-        Task<string> CaptureAsync(string message);
+        Task<string> CaptureAsync(FormattableString message);
+        
+        /// <summary>
+        /// Convenience method to capture a message and send it to Sentry with severity "info". This does not capture 
+        /// additional information  such as breadcrumbs, use <see cref="CreateEventBuilder"/> if you need that 
+        /// functionality.
+        /// </summary>
+        Task<string> CaptureAsync(object message);
         
         /// <summary>
         /// Creates an event builder to capture additional data in an event. Note that the event builder holds a reference
