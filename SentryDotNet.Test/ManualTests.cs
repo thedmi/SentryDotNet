@@ -54,7 +54,7 @@ namespace SentryDotNet.Test
             var builder = client.CreateEventBuilder();
 
             var date = DateTime.UtcNow.ToString("O");
-            builder.SetMessage($"This is an information at {date}");
+            builder.SetMessage($"This is an information at {date}\nI am another line.");
             
             await builder.CaptureAsync();
         }
