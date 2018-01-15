@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -62,6 +65,8 @@ namespace SentryDotNet.AspNetCore
 
         private SentryEventBuilder CreateEventBuilder(HttpContext context)
         {
+            var request = context.Request;
+
             var builder = _client.CreateEventBuilder();
 
             builder.Sdk = new SentrySdk
@@ -71,8 +76,29 @@ namespace SentryDotNet.AspNetCore
             };
             
             builder.Logger = string.IsNullOrWhiteSpace(builder.Logger) ? "SentryDotNet.AspNetCore" : builder.Logger;
-            builder.Culprit = context.Request.Method.ToUpper(CultureInfo.InvariantCulture) + " " +
-                              context.Request.Path.ToString();
+            builder.Culprit = request.Method.ToUpper(CultureInfo.InvariantCulture) + " " + request.Path.ToString();
+
+            var clientIp = context.Connection.RemoteIpAddress.ToString();
+            
+            builder.Request = new HttpSentryContext
+            {
+                Url = $"{request.Scheme}://{request.Host}{request.Path}",
+                Method = request.Method.ToUpper(CultureInfo.InvariantCulture),
+                QueryString = request.QueryString.ToString(),
+                Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
+                Env = new Dictionary<string, string> { { "REMOTE_ADDR", clientIp } }
+            };
+
+            if (context.User != null)
+            {
+                builder.User = new UserSentryContext
+                {
+                    Id = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    Username = context.User.FindFirst(ClaimTypes.Name)?.Value,
+                    Email = context.User.FindFirst(ClaimTypes.Email)?.Value,
+                    IpAddress = clientIp
+                };
+            }
             
             return builder;
         }

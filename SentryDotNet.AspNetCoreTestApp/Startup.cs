@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,12 @@ namespace SentryDotNet.AspNetCoreTestApp
                         environment: _env.EnvironmentName,
                         release: typeof(Startup).Assembly.GetName().Version.ToString(3),
                         logger: _env.ApplicationName)));
+
+            services.AddAuthentication(o => { o.DefaultScheme = ApiKeyAuthenticationHandler.SchemeName; })
+                .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+                    ApiKeyAuthenticationHandler.SchemeName,
+                    "API key authentication",
+                    o => { o.AllowedApiKeys = new[] { "someKey" }; });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -38,6 +45,7 @@ namespace SentryDotNet.AspNetCoreTestApp
             // Make sure middleware that catches exceptions without rethrowing them is added *before* SentryDotNet
             app.UseDeveloperExceptionPage();
             
+            app.UseAuthentication();
             app.UseSentryDotNet();
             
             app.Run(async context => { await DoSomethingAsync(context); });
@@ -54,7 +62,7 @@ namespace SentryDotNet.AspNetCoreTestApp
                 throw new InvalidOperationException("Boom");
             }
 
-            await context.Response.WriteAsync("All good.");
+            await context.Response.WriteAsync($"All good. You are '{context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value}'.");
         }
     }
 }

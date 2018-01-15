@@ -106,13 +106,23 @@ namespace SentryDotNet
         /// A trail of breadcrumbs, if any, that led up to the event creation.
         /// </summary>
         public List<ISentryBreadcrumb> Breadcrumbs { get; set; } = new List<ISentryBreadcrumb>();
+        
+        /// <summary>
+        /// The HTTP request context, if any.
+        /// </summary>
+        public IHttpSentryContext Request { get; set; }
+
+        /// <summary>
+        /// Information about the user that triggered the event.
+        /// </summary>
+        public IUserSentryContext User { get; set; }
 
         /// <summary>
         /// A dictionary of <see cref="ISentryContext" /> for this event.
         /// </summary>
         public Dictionary<string, ISentryContext> Contexts { get; set; } = new Dictionary<string, ISentryContext>();
 
-        // TODO Add Http, User, and Threads "interfaces"
+        // TODO Add User and Threads "interfaces"
 
         public void SetMessage(FormattableString message)
         {
@@ -192,6 +202,8 @@ namespace SentryDotNet
                 Exception = Exception.Any() ? Exception : null,
                 Message = Message,
                 Breadcrumbs = Breadcrumbs,
+                Request = Request,
+                User = User,
                 Contexts = Contexts.Any() ? Contexts.ToDictionary(p => p.Key, p => p.Value) : null
             };
         }

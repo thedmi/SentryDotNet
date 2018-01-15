@@ -7,7 +7,5 @@
         public const string Os = "os";
         
         public const string Runtime = "runtime";
-
-        public const string Http = "http";
     }
 }
