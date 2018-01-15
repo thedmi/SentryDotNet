@@ -4,8 +4,6 @@ namespace SentryDotNet
 {
     public class HttpSentryContext : IHttpSentryContext
     {
-        public string Type => ContextTypes.Http;
-        
         public string Url { get; set; }
         
         public string Method { get; set; }

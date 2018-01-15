@@ -113,6 +113,11 @@ namespace SentryDotNet
         public IHttpSentryContext Request { get; set; }
 
         /// <summary>
+        /// Information about the user that triggered the event.
+        /// </summary>
+        public IUserSentryContext User { get; set; }
+
+        /// <summary>
         /// A dictionary of <see cref="ISentryContext" /> for this event.
         /// </summary>
         public Dictionary<string, ISentryContext> Contexts { get; set; } = new Dictionary<string, ISentryContext>();
@@ -198,6 +203,7 @@ namespace SentryDotNet
                 Message = Message,
                 Breadcrumbs = Breadcrumbs,
                 Request = Request,
+                User = User,
                 Contexts = Contexts.Any() ? Contexts.ToDictionary(p => p.Key, p => p.Value) : null
             };
         }

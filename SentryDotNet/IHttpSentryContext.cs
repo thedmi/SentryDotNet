@@ -1,6 +1,6 @@
 ﻿namespace SentryDotNet
 {
-    public interface IHttpSentryContext : ISentryContext
+    public interface IHttpSentryContext
     {
         string Url { get; set; }
 
