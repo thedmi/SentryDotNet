@@ -56,15 +56,17 @@ See also [the Startup class in the test project](SentryDotNet.AspNetCoreTestApp/
 
 In `app.UseSentryDotNet()`, a new [SentryEventBuilder](SentryDotNet/SentryEventBuilder.cs) is created per request. This builder can be used to gather request data that is later sent to Sentry when an exception occurs. The builder can be accessed through the HTTP context items  with `HttpContext.Items[SentryDotNetMiddleware.EventBuilderKey]`.
 
-The following example illustrates this:
+The following example in an authorization handler illustrates this. Note that the mechanism works anywhere the HTTP context can be accessed.
 
 ```csharp
 // Somewhere in the authorization handler
 
-var sentryEventBuilder = (SentryEventBuilder)context.Items[SentryDotNetMiddleware.EventBuilderKey];
-sentryEventBuilder.AddBreadcrumb(new SentryBreadcrumb("authorized") { Message = $"User {username} authorized"});
+var sentryEventBuilder = (SentryEventBuilder)httpContext.Items[SentryDotNetMiddleware.EventBuilderKey];
+sentryEventBuilder.Breadcrumbs.Add(new SentryBreadcrumb("authorized") { Message = $"User {username} authorized"});
 
 ```
+
+In this example, information about the logged in user is sent along with errors (should they occur).
 
 
 ## Generic SentryClient
@@ -138,7 +140,7 @@ specific web framework you're using.
 
 # Other Sentry clients
 
-If you don't like SentryDotNet, here are a few other, more opinionated libraries. SentryDotNet borrowed ideas & code from a few of them (thanks!).
+If you don't like SentryDotNet, here are a few other libraries. SentryDotNet borrowed ideas & code from a few of them (thanks!).
 
 - [Raven C#](https://github.com/getsentry/raven-csharp)
 - [Sentinel](https://github.com/PrestigeXP/Sentinel)
