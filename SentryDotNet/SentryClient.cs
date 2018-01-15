@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace SentryDotNet
 {
@@ -187,8 +188,10 @@ namespace SentryDotNet
 
         private static JsonSerializerSettings CreateSerializerSettings()
         {
-            var serializer =
-                new JsonSerializerSettings { ContractResolver = new UnderscorePropertyNamesContractResolver() };
+            var serializer = new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy(false, false) }
+            };
             
             serializer.Converters.Add(new StringEnumConverter(true));
 

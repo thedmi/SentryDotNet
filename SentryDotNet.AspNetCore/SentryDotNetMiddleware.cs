@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,7 +82,8 @@ namespace SentryDotNet.AspNetCore
                 Url = $"{request.Scheme}://{request.Host}{request.Path}",
                 Method = request.Method.ToUpper(CultureInfo.InvariantCulture),
                 QueryString = request.QueryString.ToString(),
-                Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
+                Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
+                Env = new Dictionary<string, string> { { "REMOTE_ADDR", context.Connection.RemoteIpAddress.ToString() } }
             };
             
             return builder;
