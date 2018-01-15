@@ -98,6 +98,11 @@ namespace SentryDotNet
         /// A trail of breadcrumbs, if any, that led up to the event creation.
         /// </summary>
         public IReadOnlyList<ISentryBreadcrumb> Breadcrumbs { get; set; }
+        
+        /// <summary>
+        /// The HTTP request context, if any.
+        /// </summary>
+        public IHttpSentryContext Request { get; set; }
 
         /// <summary>
         /// A dictionary of <see cref="ISentryContext" /> for this event.

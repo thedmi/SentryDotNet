@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -62,6 +63,8 @@ namespace SentryDotNet.AspNetCore
 
         private SentryEventBuilder CreateEventBuilder(HttpContext context)
         {
+            var request = context.Request;
+
             var builder = _client.CreateEventBuilder();
 
             builder.Sdk = new SentrySdk
@@ -71,8 +74,15 @@ namespace SentryDotNet.AspNetCore
             };
             
             builder.Logger = string.IsNullOrWhiteSpace(builder.Logger) ? "SentryDotNet.AspNetCore" : builder.Logger;
-            builder.Culprit = context.Request.Method.ToUpper(CultureInfo.InvariantCulture) + " " +
-                              context.Request.Path.ToString();
+            builder.Culprit = request.Method.ToUpper(CultureInfo.InvariantCulture) + " " + request.Path.ToString();
+            
+            builder.Request = new HttpSentryContext
+            {
+                Url = $"{request.Scheme}://{request.Host}{request.Path}",
+                Method = request.Method.ToUpper(CultureInfo.InvariantCulture),
+                QueryString = request.QueryString.ToString(),
+                Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString())
+            };
             
             return builder;
         }
