@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -40,6 +37,11 @@ namespace SentryDotNet.AspNetCore
             }
             catch (Exception e) when (_client != null)
             {
+                // The user information needs to be added here, because during builder initialization
+                // the secondary authentication handlers have not yet run. This may be solved with 
+                // ASP.NET Core 2.1, see https://github.com/aspnet/Security/issues/1469 .
+                builder.AddUserInformation(context);
+                
                 builder.SetException(e);
                 await SendToSentryAsync(builder, e);
                 
@@ -78,27 +80,7 @@ namespace SentryDotNet.AspNetCore
             builder.Logger = string.IsNullOrWhiteSpace(builder.Logger) ? "SentryDotNet.AspNetCore" : builder.Logger;
             builder.Culprit = request.Method.ToUpper(CultureInfo.InvariantCulture) + " " + request.Path.ToString();
 
-            var clientIp = context.Connection.RemoteIpAddress.ToString();
-            
-            builder.Request = new HttpSentryContext
-            {
-                Url = $"{request.Scheme}://{request.Host}{request.Path}",
-                Method = request.Method.ToUpper(CultureInfo.InvariantCulture),
-                QueryString = request.QueryString.ToString(),
-                Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
-                Env = new Dictionary<string, string> { { "REMOTE_ADDR", clientIp } }
-            };
-
-            if (context.User != null)
-            {
-                builder.User = new UserSentryContext
-                {
-                    Id = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                    Username = context.User.FindFirst(ClaimTypes.Name)?.Value,
-                    Email = context.User.FindFirst(ClaimTypes.Email)?.Value,
-                    IpAddress = clientIp
-                };
-            }
+            builder.AddRequestInformation(context);
             
             return builder;
         }
