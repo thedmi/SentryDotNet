@@ -14,10 +14,13 @@ namespace SentryDotNet.AspNetCore
 
         private readonly ISentryClient _client;
 
-        public SentryDotNetMiddleware(RequestDelegate next, ISentryClient client)
+        private readonly SentryDotNetOptions _options;
+
+        public SentryDotNetMiddleware(RequestDelegate next, ISentryClient client, SentryDotNetOptions options)
         {
             _next = next;
             _client = client;
+            _options = options;
 
             if (client?.Dsn == null)
             {
@@ -80,7 +83,7 @@ namespace SentryDotNet.AspNetCore
             builder.Logger = string.IsNullOrWhiteSpace(builder.Logger) ? "SentryDotNet.AspNetCore" : builder.Logger;
             builder.Culprit = request.Method.ToUpper(CultureInfo.InvariantCulture) + " " + request.Path.ToString();
 
-            builder.AddRequestInformation(context);
+            builder.AddRequestInformation(context, _options);
             
             return builder;
         }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SentryDotNet.AspNetCore
 {
-    public static class UseMiddlewareExtensions
+    public static class MiddlewareExtensions
     {
         public static IServiceCollection AddSentryDotNet(this IServiceCollection services, ISentryClient sentryClient = null)
         {
@@ -14,14 +14,14 @@ namespace SentryDotNet.AspNetCore
             return services;
         }
         
-        public static IApplicationBuilder UseSentryDotNet(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSentryDotNet(this IApplicationBuilder app, SentryDotNetOptions options = null)
         {
             if (app == null)
             {
                 throw new ArgumentNullException(nameof(app));
             }
 
-            return app.UseMiddleware<SentryDotNetMiddleware>();
+            return app.UseMiddleware<SentryDotNetMiddleware>(options ?? new SentryDotNetOptions());
         }
     }
 }

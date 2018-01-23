@@ -46,7 +46,7 @@ namespace SentryDotNet.AspNetCoreTestApp
             app.UseDeveloperExceptionPage();
             
             app.UseAuthentication();
-            app.UseSentryDotNet();
+            app.UseSentryDotNet(new SentryDotNetOptions { CaptureRequestBody = true });
             
             app.Run(async context => { await DoSomethingAsync(context); });
         }

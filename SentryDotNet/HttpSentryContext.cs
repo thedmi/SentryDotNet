@@ -8,7 +8,7 @@ namespace SentryDotNet
         
         public string Method { get; set; }
         
-        public string Data { get; set; }
+        public object Data { get; set; }
         
         public string QueryString { get; set; }
         
