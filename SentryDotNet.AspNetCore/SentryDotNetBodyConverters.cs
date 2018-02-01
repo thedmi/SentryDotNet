@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 using Microsoft.AspNetCore.Http;
@@ -20,17 +21,24 @@ namespace SentryDotNet.AspNetCore
             // Allows using several time the stream in ASP.Net Core
             request.EnableRewind();
 
-            using (var reader = new StreamReader(request.Body, Encoding.UTF8, true, 1024, true))
+            try
             {
-                try
+                using (var reader = new StreamReader(request.Body, Encoding.UTF8, true, 1024, true))
                 {
-                    return JObject.Parse(reader.ReadToEnd());
+                    var json = reader.ReadToEnd();
+                    return string.IsNullOrWhiteSpace(json) ? null : JObject.Parse(json);
                 }
-                finally
-                {
-                    // Rewind, so the core is not lost when it looks the body for the request
-                    request.Body.Position = 0;
-                }
+            }
+            catch (Exception)
+            {
+                // Intentionally catch all errors that occur during body reading, so that malformed body content
+                // can't trigger failures.
+                return null;
+            }
+            finally
+            {
+                // Rewind, so the core is not lost when it looks the body for the request
+                request.Body.Position = 0;
             }
         }
     }
