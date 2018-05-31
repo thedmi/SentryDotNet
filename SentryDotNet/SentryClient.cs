@@ -141,8 +141,11 @@ namespace SentryDotNet
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                throw new SentryClientException(HttpStatusCode.BadRequest,
-                    string.Join(".", response.Headers.GetValues("X-Sentry-Error")));
+                var errorInfo = response.Headers.Contains("X-Sentry-Error")
+                    ? string.Join("\n", response.Headers.GetValues("X-Sentry-Error"))
+                    : "";
+
+                throw new SentryClientException(HttpStatusCode.BadRequest, errorInfo);
             }
             
             var responseMessage = JsonConvert.DeserializeObject<SentrySuccessResponse>(await response.Content.ReadAsStringAsync());
