@@ -8,7 +8,7 @@
     <PackageLicenseUrl>https://github.com/thedmi/SentryDotNet/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/thedmi/SentryDotNet</PackageProjectUrl>
     <PackageTags>sentry</PackageTags>
-    <Version>1.4.0</Version>
+    <Version>1.4.2</Version>
     <Copyright>Dani Michel</Copyright>
   </PropertyGroup>
   <ItemGroup>
