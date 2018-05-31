@@ -43,7 +43,7 @@ namespace SentryDotNet
 
                     if (Function == "MoveNext")
                     {
-                        var match = Regex.Match(Module, @"^(.*)\+<(\w*)>d__\d*$");
+                        var match = Regex.Match(Module ?? "", @"^(.*)\+<(\w*)>d__\d*$");
 
                         if (match.Success && match.Groups.Count == 3)
                         {

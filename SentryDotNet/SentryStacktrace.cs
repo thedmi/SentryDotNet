@@ -14,13 +14,13 @@ namespace SentryDotNet
     {
         public static SentryStacktrace FromException(Exception exception)
         {
+            var frames = new StackTrace(exception, true).GetFrames();
+
             return new SentryStacktrace
             {
-                Frames = new List<ISentryStacktraceFrame>(new StackTrace(exception, true)
-                    .GetFrames()
-                    .Reverse()
-                    .Select(frame => new SentryStacktraceFrame(frame))
-                    .ToList())
+                Frames = frames != null
+                    ? new List<ISentryStacktraceFrame>(frames.Reverse().Select(frame => new SentryStacktraceFrame(frame)).ToList())
+                    : new List<ISentryStacktraceFrame>()
             };
         }
 

@@ -149,7 +149,7 @@ namespace SentryDotNet
         {
             if (Culprit == null)
             {
-                Culprit = ex.TargetSite == null
+                Culprit = ex.TargetSite == null || ex.TargetSite.ReflectedType == null
                     ? null
                     : $"{ex.TargetSite.ReflectedType.FullName} in {ex.TargetSite.Name}";
             }
@@ -199,7 +199,7 @@ namespace SentryDotNet
                 Modules = Modules.Any() ? Modules : null,
                 Extra = Extra,
                 Fingerprint = Fingerprint.Any() ? Fingerprint : null,
-                Exception = Exception.Any() ? Exception : null,
+                Exception = Exception != null && Exception.Any() ? Exception : null,
                 Message = Message,
                 Breadcrumbs = Breadcrumbs,
                 Request = Request,
