@@ -40,6 +40,14 @@ namespace SentryDotNet.AspNetCore
             }
             catch (Exception e) when (_client != null)
             {
+                if (e is SentryClientException)
+                {
+                    Console.Error.WriteLine("Exception during communication with Sentry:");
+                    Console.Error.WriteLine(e.ToString());
+                    
+                    return;
+                }
+
                 // The user information needs to be added here, because during builder initialization
                 // the secondary authentication handlers have not yet run. This may be solved with 
                 // ASP.NET Core 2.1, see https://github.com/aspnet/Security/issues/1469 .
