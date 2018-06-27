@@ -24,6 +24,8 @@ namespace SentryDotNet
 
         private readonly decimal _sampleRate;
 
+        private readonly Action<string> _onError;
+
         /// <summary>
         /// Creates a client capable of sending events to Sentry.
         /// </summary>
@@ -33,11 +35,13 @@ namespace SentryDotNet
         /// <param name="sampleRate">The percentage of events that are actually sent to Sentry e.g. 0.26.</param>
         /// <param name="sendHttpRequestFunc">Function that invokes a HttpClient with the given request. This may be used to install 
         /// retry policies or share the HttpClient. If not provided, HttpClient.SendAsync on the internal client will be used.</param>
+        /// <param name="onError">Error message callback. If null (the default) an exception is thrown instead of logging the error.</param>
         public SentryClient(
             string dsn,
             SentryEventDefaults defaults = null,
             decimal sampleRate = 1m,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> sendHttpRequestFunc = null)
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> sendHttpRequestFunc = null,
+            Action<string> onError = null)
         {
             Dsn = string.IsNullOrEmpty(dsn) ? null : new Dsn(dsn);
 
@@ -48,6 +52,7 @@ namespace SentryDotNet
 
             _defaults = defaults ?? new SentryEventDefaults();
             _sampleRate = sampleRate;
+            _onError = onError;
             _sendHttpRequestFunc = sendHttpRequestFunc ?? (async r => await _httpClient.SendAsync(r));
         }
 
@@ -145,7 +150,12 @@ namespace SentryDotNet
                     ? string.Join("\n", response.Headers.GetValues("X-Sentry-Error"))
                     : "";
 
-                throw new SentryClientException(HttpStatusCode.BadRequest, errorInfo);
+                if (_onError == null)
+                {
+                    throw new SentryClientException(HttpStatusCode.BadRequest, errorInfo);
+                }
+
+                _onError("Error while communicating with sentry API. " + errorInfo);
             }
             
             var responseMessage = JsonConvert.DeserializeObject<SentrySuccessResponse>(await response.Content.ReadAsStringAsync());
