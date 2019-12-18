@@ -19,7 +19,7 @@ namespace SentryDotNet.AspNetCore
             }
 
             // Allows using several time the stream in ASP.Net Core
-            request.EnableRewind();
+            request.EnableBuffering();
 
             try
             {
